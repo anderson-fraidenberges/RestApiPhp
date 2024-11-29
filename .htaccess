@@ -1,0 +1,16 @@
+
+# HTID:10651387: DO NOT REMOVE OR MODIFY THIS LINE AND THE LINES BELOW
+php_value display_errors 1
+# DO NOT REMOVE OR MODIFY THIS LINE AND THE LINES ABOVE HTID:10651387:
+
+# Turn rewrite engine on
+#Options +FollowSymlinks
+RewriteEngine on
+
+RewriteBase /api-pdv
+
+RewriteRule ^usuario/list$    RestController.php?c=user&page_key=list [NC,L]
+
+RewriteRule ^usuario/create$  RestController.php?c=user&page_key=create [qsa,nc]
+
+RewriteRule ^usuario/delete/(.*)$  RestController.php?c=user&page_key=delete&id=$1 [qsa,nc]
