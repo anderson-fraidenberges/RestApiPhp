@@ -1,4 +1,6 @@
 <?php
+require_once("EitherOr.php");
+
 class DBController {
     private $conn;
 
@@ -18,17 +20,18 @@ class DBController {
             $this->conn = new PDO($dsn, $this->user, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
+            return new ResultError("Connection failed");             
         }
     }
 
     public function executeSelectQuery($query, $params = []) {
         try {
             $stmt = $this->conn->prepare($query);
-            $stmt->execute($params);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->execute($params);            
+            return new ResultSuccess($stmt->fetchAll(PDO::FETCH_ASSOC));
+            
         } catch (PDOException $e) {
-            die("Error executing query: " . $e->getMessage());
+            return new ResultError($e->getMessage());                            
         }
     }
 
@@ -37,28 +40,28 @@ class DBController {
             $stmt = $this->conn->prepare($query);
             $stmt->execute($params);
             return (int)$stmt->fetchColumn();
-        } catch (PDOException $e) {
-            die("Error executing query: " . $e->getMessage());
+        } catch (PDOException $e) {            
+            return new ResultError($e->getMessage());
         }
     }
 
     public function executeInsert($query, $params = []) {
         try {
             $stmt = $this->conn->prepare($query);
-            $stmt->execute($params);
-            return "New record created successfully";
-        } catch (PDOException $e) {
-            return "Error: " . $query . "<br>" . $e->getMessage();
+            $stmt->execute($params);            
+            return new ResultSuccess("", "New record created successfully");
+        } catch (PDOException $e) {            
+            return new ResultError($e->getMessage());      
         }
     }
 
-    public function executeInsertWithReturnId($query, $params = []): int {
+    public function executeInsertWithReturnId($query, $params = []) {
         try {
             $stmt = $this->conn->prepare($query);
-            $stmt->execute($params);
-            return (int)$this->conn->lastInsertId();
-        } catch (PDOException $e) {
-            die("Error executing query: " . $e->getMessage());
+            $stmt->execute($params);            
+            return new ResultSuccess($this->conn->lastInsertId());
+        } catch (PDOException $e) {            
+            return new ResultError($e->getMessage());    
         }
     }
 
@@ -66,9 +69,15 @@ class DBController {
         try {
             $stmt = $this->conn->prepare($query);
             $stmt->execute($params);
-            return "Record deleted successfully";
-        } catch (PDOException $e) {
-            return "Error: " . $query . "<br>" . $e->getMessage();
+
+            if ($stmt->rowCount() > 0) {           
+                return new ResultSuccess("Record deleted successfully");                     
+            } else {
+                return new ResultSuccess("Record Not Found", "404");
+            }
+
+        } catch (PDOException $e) {            
+            return new ResultError($e->getMessage());
         }
     }
 
@@ -76,14 +85,20 @@ class DBController {
         try {
             $stmt = $this->conn->prepare($query);
             $stmt->execute($params);
-            return "Record updated successfully";
+
+            if ($stmt->rowCount() > 0) {           
+                return new ResultSuccess("Record deleted successfully");                     
+            } else {
+                return new ResultSuccess("Record Not Found", "404");
+            }                        
+
         } catch (PDOException $e) {
-            return "Error: " . $query . "<br>" . $e->getMessage();
+            return new ResultError($e->getMessage());      
         }
     }
 
     public function __destruct() {
-        $this->conn = null; // Fecha a conexão
-    }
+        $this->conn = null;
+    }   
 }
 ?>

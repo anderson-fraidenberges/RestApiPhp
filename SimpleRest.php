@@ -1,10 +1,11 @@
 <?php 
+
+require_once("EitherOr.php");
 class SimpleRest {
 
-	
 	private $httpVersion = "HTTP/1.1";	
 
-	public function setHttpHeaders($contentType, $statusCode){
+	protected function setHttpHeaders($contentType, $statusCode){
 		
 		$statusMessage = $this -> getHttpStatusMessage($statusCode);
 		
@@ -12,7 +13,7 @@ class SimpleRest {
 		header("Content-Type:". $contentType);
 	}
 	
-	public function getHttpStatusMessage($statusCode){
+	private function getHttpStatusMessage($statusCode){
 		$httpStatus = array(
 			100 => 'Continue',  
 			101 => 'Switching Protocols',  
@@ -58,30 +59,32 @@ class SimpleRest {
 		return ($httpStatus[$statusCode]) ? $httpStatus[$statusCode] : $httpStatus[500];
 	}
 	
-	public function renderResult($rawData) {
-		
-	    if(empty($rawData)) {
-			$statusCode = 404;
-			$rawData = array('error' => "dados não encontrados");		
-		} else {
-			$statusCode = 200;
-		}
+	protected function renderResult($rawData) {
+
+		$statusCode = $this->getStatusCodeResponse($rawData->getValue());		
         
 		$requestContentType = 'application/json';
 		$this ->setHttpHeaders($requestContentType, $statusCode);
 		
-		$result = $rawData;
+		$result = $rawData->getValue();
 				
 		if(strpos($requestContentType,'application/json') !== false){
 			$response = $this->encodeJson($result);
 			echo $response;
 		 }		    
-	}		
-	
-	public function encodeJson($responseData) {
+	}
+
+	private function getStatusCodeResponse($responseData) {
+		
 		$jsonResponse = json_encode($responseData);
-		return $jsonResponse;		
+		$decodedResponse = json_decode($jsonResponse, true);
+		return isset($decodedResponse['statusCode']) ? $decodedResponse['statusCode'] : null;
 	}
 	
+	
+	protected function encodeJson($responseData) {
+		$jsonResponse = json_encode($responseData);
+		return $jsonResponse;		
+	}	
 }
 ?>

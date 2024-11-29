@@ -19,7 +19,7 @@ Class UsuarioDal {
 		$strIns = "INSERT INTO users (name, email, password, createdAt, updatedAt) values (?, ?, ?, now(), now())";
         $params = [$name, $email, $password];
 
-		return $dbcontroller->executeInsert($strIns, $params);		
+		return $dbcontroller->executeInsertWithReturnId($strIns, $params);		
     }
     
     public function delete($id) {	

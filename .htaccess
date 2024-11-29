@@ -9,8 +9,6 @@ RewriteEngine on
 
 RewriteBase /api-pdv
 
-RewriteRule ^usuario/list$    RestController.php?c=user&page_key=list [NC,L]
+RewriteRule ^usuario/(.*)$ RestController.php?c=user&id=$1 [qsa,nc]
 
-RewriteRule ^usuario/create$  RestController.php?c=user&page_key=create [qsa,nc]
-
-RewriteRule ^usuario/delete/(.*)$  RestController.php?c=user&page_key=delete&id=$1 [qsa,nc]
+RewriteRule ^usuario RestController.php?c=user [nc]
