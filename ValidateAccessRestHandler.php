@@ -14,19 +14,8 @@
 
    function renderResultNotAccess() {
     $requestContentType = 'application/json';
-    $this ->setHttpHeaders($requestContentType, 401);
-            
-     if(strpos($requestContentType,'application/json') !== false){
-        $response = $this->encodeJson("Not Unauthorized");
-        echo $response;
-     }		
-   }
+    $statusCode = 401;
 
-   function renderResultBadRequest() {
-    
-    $requestContentType = 'application/json';
-    $statusCode = 400;
-    die($this->getHttpStatusMessage($statusCode));
     $this ->setHttpHeaders($requestContentType, $statusCode);
             
      if(strpos($requestContentType,'application/json') !== false){
@@ -35,5 +24,17 @@
      }		
    }
 
+   function renderResultBadRequest() {
+    
+    $requestContentType = 'application/json';
+    $statusCode = 400;
+        
+    $this ->setHttpHeaders($requestContentType, $statusCode);
+            
+     if(strpos($requestContentType,'application/json') !== false){
+        $response = $this->getHttpStatusMessage($statusCode);
+        echo $response;
+     }		
+   }
  }
 ?>
