@@ -1,5 +1,5 @@
 <?php
-require_once("EitherOr.php");
+require_once("EitherResultResponse.php");
 
 class DBController {
     private $conn;

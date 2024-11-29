@@ -12,7 +12,7 @@
          return true;
    }
 
-   public function renderResultNotAccess() {
+   function renderResultNotAccess() {
     $requestContentType = 'application/json';
     $this ->setHttpHeaders($requestContentType, 401);
             
@@ -21,5 +21,19 @@
         echo $response;
      }		
    }
+
+   function renderResultBadRequest() {
+    
+    $requestContentType = 'application/json';
+    $statusCode = 400;
+    die($this->getHttpStatusMessage($statusCode));
+    $this ->setHttpHeaders($requestContentType, $statusCode);
+            
+     if(strpos($requestContentType,'application/json') !== false){
+        $response = $this->getHttpStatusMessage($statusCode);
+        echo $response;
+     }		
+   }
+
  }
 ?>

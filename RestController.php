@@ -21,6 +21,13 @@ if (!isset(getallheaders()['x-req'])) {
   if (!$validateHandler->isValidated($xreq))    
     return;
 }
+
+if ($_GET["id"] != "" && ($method != "PUT" || $method != "DELETE") ) 
+ {  
+     $validateHandler->renderResultBadRequest();
+     return;
+ }
+
  if ($view == 'user') { 
   $usuarioRestHandler = new UsuarioRestHandler();  
 

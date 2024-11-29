@@ -1,6 +1,6 @@
 <?php 
 
-require_once("EitherOr.php");
+require_once("EitherResultResponse.php");
 class SimpleRest {
 
 	private $httpVersion = "HTTP/1.1";	
@@ -13,7 +13,7 @@ class SimpleRest {
 		header("Content-Type:". $contentType);
 	}
 	
-	private function getHttpStatusMessage($statusCode){
+	public function getHttpStatusMessage($statusCode){
 		$httpStatus = array(
 			100 => 'Continue',  
 			101 => 'Switching Protocols',  
@@ -74,7 +74,7 @@ class SimpleRest {
 		 }		    
 	}
 
-	private function getStatusCodeResponse($responseData) {
+	protected function getStatusCodeResponse($responseData) {
 		
 		$jsonResponse = json_encode($responseData);
 		$decodedResponse = json_decode($jsonResponse, true);
